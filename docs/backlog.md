@@ -14,7 +14,7 @@ Created by pair-init; re-run any line idempotently:
 
 ```bash
 scripts/adr.sh labels        # adr, adr-low, adr-high, adr-approved
-# area labels: {{AREA_LABELS}}
+# area labels: core, cli, infra, polish, docs
 # plus: epic, ladder-approved, session-log
 ```
 

@@ -17,12 +17,8 @@ need the reason?** Then it is an ADR.
 High risk if **any one** line applies (the asymmetry is on purpose):
 
 1. It adds, removes, or swaps a dependency.
-2. <!-- pf:begin rubric-project-lines -->
-   [pair-init fills lines 2, 3, 5, 6 from the interview: the persisted-shape
-   line, the hard-constraints line, the public-surface/state-machine line,
-   and the domain-rules line — each naming this project's actual files and
-   rules.]
-   <!-- pf:end rubric-project-lines -->
+2. 2. It changes the persisted save shape (`.hangman-save.json`,
+   `schemaVersion`, the serialised `GameState`).
 3. It weakens or reinterprets any hard constraint in `AGENTS.md`.
 4. It reverses or reinterprets an existing decision-log row.
 5. It changes a public surface another layer consumes.

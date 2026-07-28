@@ -67,7 +67,7 @@ Ladder position: X of epic #E. Depends on: #A, #B.
 
 ## Loop
 
-<!-- Tick as you go; mirrors the Stage field on the board: {{BOARD_URL}} -->
+<!-- Tick as you go; mirrors the Stage field on the board: https://github.com/users/KelliherL/projects/2 -->
 
 - [ ] **Planned** — `## Plan` comment posted on this issue
 - [ ] **Building** — branch `issue-<n>-<slug>`, code + tests, inside the surface

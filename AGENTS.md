@@ -7,13 +7,13 @@ identity- or board-shaped may be hardcoded anywhere else.
 
 ## What this is
 
-{{PROJECT_NAME}} — {{PROJECT_DESCRIPTION}}
+hangman-cli — a terminal hangman game: pure engine, JSON-file save/resume, thin CLI shell. Built solo as the pair-factory kit's proving ground.
 
 ## Read these first
 
 Authoritative input to every task; do not infer design from the code alone.
 
-- The PRD the current epic cites (`{{PRD_PATTERN}}` — a sequence; old ones are
+- The PRD the current epic cites (`docs/prd*.md` — a sequence; old ones are
   never rewritten).
 - `docs/architecture.md` — **living document**: overview + the decision log.
   The reasoning behind each decision lives in its ADR. Do not rewrite it.
@@ -30,14 +30,16 @@ Authoritative input to every task; do not infer design from the code alone.
 
 These hold in every session, whether or not a skill was invoked.
 
-<!-- pf:begin constraints -->
-1. **[Project constraint 1 — pair-init fills these from the interview: the
-   invariants whose violation is a data leak, a corrupted persisted shape, or
-   a broken domain rule. Three or four, concrete, testable.]**
-2. **[Project constraint 2]**
-3. **[Project constraint 3]**
-4. **[Project constraint 4]**
-<!-- pf:end constraints -->
+1. **Engine purity.** Everything under `src/lib/engine/` is dependency-free
+   TypeScript: no IO, no `fs`, no `readline`, no CLI imports. It is where
+   correctness lives and where the test mass goes.
+2. **One save file**, `.hangman-save.json`, shaped
+   `{ schemaVersion, state }`. Read → parse → **validate shape** → hydrate,
+   else discard and start fresh. Corrupt data must never crash or half-load.
+3. **The CLI layer changes game state only through the engine API** — no
+   game logic in `src/cli.ts`, ever.
+4. **Game rules** (masking, guess limits, win/lose) change only via a PRD,
+   never as a side effect of other work.
 5. **Green or no merge.** Every PR runs typecheck and the full test suite,
    with real output shown. Never report a suite as passing without running it.
 6. **No unrequested dependencies.** Adding a library is an architectural
@@ -50,20 +52,20 @@ These hold in every session, whether or not a skill was invoked.
 
 ## Commands
 
-{{RUNTIME_REQUIREMENT}}
+Node ≥ 22.12 is required (CI pins 22).
 
 ```bash
-{{SETUP_CMD}}        # install dependencies
-{{TEST_CMD}}         # full test suite — CI and every skill call it this way
-{{TYPECHECK_CMD}}    # typecheck
-{{LINT_CMD}}         # lint
+npm ci        # install dependencies
+npm test         # full test suite — CI and every skill call it this way
+npx tsc --noEmit    # typecheck
+npm run lint         # lint
 ```
 
 ## The flow
 
 Work is divided by **ownership, not by stage**. Per epic:
 
-1. **PRD** — humans + agent write the next `{{PRD_PATTERN}}` file.
+1. **PRD** — humans + agent write the next `docs/prd*.md` file.
 2. **Decompose** — `.claude/skills/decompose/SKILL.md` turns it into a
    reviewed ladder: rungs with **assignees, declared file surfaces, parallel
    groups (disjoint surfaces only), and the critical path front-loaded** so
@@ -77,7 +79,9 @@ Work is divided by **ownership, not by stage**. Per epic:
 **Who am I?** `gh api user --jq .login`, resolved against `pairing.json`
 `humans[]`:
 
-{{HUMANS_TABLE}}
+| `gh api user --jq .login` | Human | CLI |
+|---|---|---|
+| `KelliherL` | Lachlan | Claude Code |
 
 A login not in that table stops and asks. One human in the table = **solo
 mode**: self-verify is allowed and loudly bannered.
@@ -107,7 +111,7 @@ wrap up with a Session log comment and a report of what needs a human.
 
   | PR carries | Verdict required? |
   |---|---|
-  | <!-- pf:begin verdict-required -->`core`, `infra`, or any change to the pure core, persistence, or the state machine (paths in `pairing.json` → `verify.verdictRequired`)<!-- pf:end verdict-required --> | **Yes** — merge only after a `## Verify verdict` |
+  | `core`, `infra`, or any change to `src/lib/engine/**`, `src/lib/save*`, or `src/cli*` (mirrored in `pairing.json` → `verify.verdictRequired`) | **Yes** — merge only after a `## Verify verdict` |
   | Any PR that **deletes or modifies an existing test assertion** | **Yes**, whatever its label — weakening the suite is the change least able to afford skipping review |
   | `docs`, `polish`, or purely **additive** test-only PRs | No — verify if convenient, do not block |
 
@@ -131,7 +135,7 @@ someone other than the proposer.
 
 ## The board
 
-{{BOARD_URL}} — a custom **Stage** single-select field (Backlog / Planned /
+https://github.com/users/KelliherL/projects/2 — a custom **Stage** single-select field (Backlog / Planned /
 Building / Verifying / Human Review / Done). All ids live in `pairing.json`
 `.board`; scripts flip stages via `pf_board_flip`, best-effort. **Human Review
 is a hard stop:** an agent may move a card *into* it and never out of it.
@@ -148,7 +152,7 @@ it. Do not invent a different shape.
 
 - Branch per issue, named for it: `issue-14-engine-firing`.
 - One PR per issue, referencing it (`Closes #N`), via the PR template.
-- Labels per the runbook in `docs/backlog.md`: {{AREA_LABELS}}, plus the epic
+- Labels per the runbook in `docs/backlog.md`: core, cli, infra, polish, docs, plus the epic
   label. ADR issues carry `adr` + `adr-low`/`adr-high` (+ `adr-approved`).
 - Merge is the human's call, after verify where required.
 
@@ -166,7 +170,7 @@ it. Do not invent a different shape.
   `.claude/`, `scripts/`, `.github/`, or the templates is a `--scope process`
   ADR, approved by a human other than the proposer.
 
-### `{{DEFAULT_BRANCH}}` is protected
+### `main` is protected
 
 A ruleset enforces this — not a convention you can talk your way past: no
 direct pushes (every change via PR), CI's `check` job required, squash merge

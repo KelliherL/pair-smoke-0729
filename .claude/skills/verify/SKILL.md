@@ -23,11 +23,9 @@ is bannered).
    - **Correct:** does the code do what the plan and the issue's acceptance
      criteria say? Check the issue's declared **File surface** — changes
      outside it are a finding.
-     <!-- pf:begin verify-checks -->
-     Walk the project's hard constraints (AGENTS.md) against the diff —
-     pair-init fills this block with the project-specific attack list (the
-     invariants whose violation is a leak, a corrupt save, or a rule break).
-     <!-- pf:end verify-checks -->
+          Walk the hangman rules against the diff: masking correctness, repeat
+     and invalid guesses, guess-limit boundaries, win/lose timing, save-file
+     corruption fallback, and engine purity (no IO inside `src/lib/engine/`).
    - **Tested:** do the tests pin the behaviour, or pass vacuously? Name
      missing adversarial cases and add or demand them.
    - **Falsifiable (highest-yield check on this list):** for each invariant

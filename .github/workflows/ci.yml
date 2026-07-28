@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [{{DEFAULT_BRANCH}}]
+    branches: [main]
   push:
-    branches: [{{DEFAULT_BRANCH}}]
+    branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -29,20 +29,28 @@ jobs:
       # build — the job passes so `check` can be a required check from day 0.
       - id: guard
         run: |
-          if [ -f "{{READY_FILE}}" ]; then
+          if [ -f "package.json" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::No {{READY_FILE}} yet — nothing to typecheck or test."
+            echo "::notice::No package.json yet — nothing to typecheck or test."
           fi
 
-      # SETUP_STEPS steps must each carry: if: steps.guard.outputs.ready == 'true'
-{{SETUP_STEPS}}
+      
+      - uses: actions/setup-node@v4
+        if: steps.guard.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        if: steps.guard.outputs.ready == 'true'
+        run: npm ci
 
       - name: Typecheck
         if: steps.guard.outputs.ready == 'true'
-        run: {{TYPECHECK_CMD}}
+        run: npx tsc --noEmit
 
       - name: Test
         if: steps.guard.outputs.ready == 'true'
-        run: {{TEST_CMD}}
+        run: npm test

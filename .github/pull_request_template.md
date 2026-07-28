@@ -19,14 +19,13 @@ Closes #
 
 ## Checks
 
-- [ ] `{{TYPECHECK_CMD}}` clean
-- [ ] `{{TEST_CMD}}` green — full suite, run locally, not assumed
+- [ ] `npx tsc --noEmit` clean
+- [ ] `npm test` green — full suite, run locally, not assumed
 - [ ] `scripts/adr.sh check` clean (or red only by a declared
       `proposed-implemented` ADR)
-<!-- pf:begin pr-checks -->
-- [ ] [pair-init fills 2–3 project-specific check lines here — the hard
-      constraints a diff can silently break]
-<!-- pf:end pr-checks -->
+- [ ] Engine code imports no IO and no CLI modules
+- [ ] Game state changes only via the engine API
+- [ ] `.hangman-save.json` shape still matches `docs/architecture.md`
 
 <!-- Paste the real test output. "Tests pass" is not evidence. -->
 

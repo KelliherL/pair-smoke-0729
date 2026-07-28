@@ -1,13 +1,12 @@
 {
   "version": 1,
   "project": {
-    "name": "battleship",
+    "name": "hangman-cli",
     "defaultBranch": "main",
     "prdPattern": "docs/prd*.md"
   },
   "humans": [
-    { "login": "KelliherL", "name": "Lachlan", "cli": "claude" },
-    { "login": "tucktuck101", "name": "Jeff", "cli": "codex" }
+    { "login": "KelliherL", "name": "Lachlan", "cli": "claude" }
   ],
   "commands": {
     "setup": "npm ci",
@@ -23,22 +22,22 @@
     "timeoutMinutes": 15,
     "verdictRequired": {
       "labels": ["core", "infra"],
-      "paths": ["src/lib/engine/**", "src/lib/storage*", "src/lib/reducer*"]
+      "paths": ["src/lib/engine/**", "src/lib/save*", "src/cli*"]
     }
   },
   "board": {
     "owner": "KelliherL",
-    "projectNumber": 0,
-    "projectId": "",
-    "stageFieldId": "",
+    "projectNumber": 2,
+    "projectId": "PVT_kwHOCrWVts4BevQb",
+    "stageFieldId": "PVTSSF_lAHOCrWVts4BevQbzhZHO7c",
     "stageOptionIds": {
-      "Backlog": "",
-      "Planned": "",
-      "Building": "",
-      "Verifying": "",
-      "Human Review": "",
-      "Done": ""
+      "Backlog": "f55e3d99",
+      "Planned": "8334df53",
+      "Building": "0f7bd86d",
+      "Verifying": "70bb98e9",
+      "Human Review": "afe357d1",
+      "Done": "d7d0ec19"
     }
   },
-  "sessionLogIssue": 0
+  "sessionLogIssue": 1
 }
