@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [{{DEFAULT_BRANCH}}]
+  push:
+    branches: [{{DEFAULT_BRANCH}}]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The ADR gate runs first, offline, no token: an unruled high-risk
+      # decision (proposed OR proposed-implemented) cannot ride a merge.
+      - name: ADR approval gate
+        run: bash scripts/adr.sh check
+
+      # Until the project scaffold lands (first rung), there is nothing to
+      # build — the job passes so `check` can be a required check from day 0.
+      - id: guard
+        run: |
+          if [ -f "{{READY_FILE}}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No {{READY_FILE}} yet — nothing to typecheck or test."
+          fi
+
+      # SETUP_STEPS steps must each carry: if: steps.guard.outputs.ready == 'true'
+{{SETUP_STEPS}}
+
+      - name: Typecheck
+        if: steps.guard.outputs.ready == 'true'
+        run: {{TYPECHECK_CMD}}
+
+      - name: Test
+        if: steps.guard.outputs.ready == 'true'
+        run: {{TEST_CMD}}

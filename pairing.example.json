@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "project": {
+    "name": "battleship",
+    "defaultBranch": "main",
+    "prdPattern": "docs/prd*.md"
+  },
+  "humans": [
+    { "login": "KelliherL", "name": "Lachlan", "cli": "claude" },
+    { "login": "tucktuck101", "name": "Jeff", "cli": "codex" }
+  ],
+  "commands": {
+    "setup": "npm ci",
+    "test": "npm test",
+    "typecheck": "npx tsc --noEmit",
+    "lint": "npm run lint"
+  },
+  "verify": {
+    "tool": "codex",
+    "model": "gpt-5.6-terra",
+    "reasoningEffort": "high",
+    "mode": "diff",
+    "timeoutMinutes": 15,
+    "verdictRequired": {
+      "labels": ["core", "infra"],
+      "paths": ["src/lib/engine/**", "src/lib/storage*", "src/lib/reducer*"]
+    }
+  },
+  "board": {
+    "owner": "KelliherL",
+    "projectNumber": 0,
+    "projectId": "",
+    "stageFieldId": "",
+    "stageOptionIds": {
+      "Backlog": "",
+      "Planned": "",
+      "Building": "",
+      "Verifying": "",
+      "Human Review": "",
+      "Done": ""
+    }
+  },
+  "sessionLogIssue": 0
+}

@@ -1,0 +1,9 @@
+# pair-factory runtime state — never committed
+.pair/
+
+# per-machine agent overrides
+.claude/settings.local.json
+
+# OS noise
+.DS_Store
+Thumbs.db
