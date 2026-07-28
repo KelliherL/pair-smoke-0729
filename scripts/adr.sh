@@ -120,7 +120,7 @@ cmd_new() {
     ADR_NUM="$num" ADR_TITLE="$title" ADR_RISK="$risk" ADR_STATUS="$status" \
     ADR_DATE="$date" ADR_BLOCKS="$blocks_md" ADR_SCOPE="$scope" \
     perl -pe '
-      s/^# ADR NNNN — TITLE$/# ADR $ENV{ADR_NUM} — $ENV{ADR_TITLE}/;
+      s/^# ADR NNNN — TITLE?$/# ADR $ENV{ADR_NUM} — $ENV{ADR_TITLE}/;
       s/^- \*\*Status:\*\* .*/- **Status:** $ENV{ADR_STATUS}/;
       s/^- \*\*Risk:\*\* .*/- **Risk:** $ENV{ADR_RISK}\n- **Scope:** $ENV{ADR_SCOPE}/ if $ENV{ADR_SCOPE};
       s/^- \*\*Risk:\*\* .*/- **Risk:** $ENV{ADR_RISK}/;
