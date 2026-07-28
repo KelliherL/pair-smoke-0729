@@ -1,6 +1,6 @@
 # ADR 0004 — Full-mode verify is experimental until sandboxed execution works
 
-- **Status:** proposed
+- **Status:** accepted
 - **Risk:** high
 - **Scope:** process
 - **Date:** 2026-07-29
