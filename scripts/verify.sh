@@ -115,8 +115,8 @@ cmd_run() {
     echo "PR #$pr is already claimed (scripts/verify.sh status $pr). Use --reclaim to take over a stale claim."
     exit 2
   fi
-  if [ "$claim_state" = verdict ]; then
-    echo "PR #$pr already has a verdict."
+  if [ "$claim_state" = verdict ] && [ "$reclaim" != 1 ]; then
+    echo "PR #$pr already has a verdict. Re-verifying after fixes? Use --reclaim."
     exit 2
   fi
   if ! command -v codex >/dev/null 2>&1; then
@@ -180,9 +180,16 @@ worker() { # $1=pr $2=mode $3=model $4=timeout-min $5=log
   if [ "$mode" = full ]; then
     clone="$PF_ROOT/.pair/clones/pr$pr"
     rm -rf "$clone"
-    git clone --local --no-hardlinks . "$clone" >/dev/null 2>&1 || { post_abort "$pr" "Local clone failed." "$log"; return; }
-    git -C "$clone" fetch -q origin "pull/$pr/head" && git -C "$clone" checkout -q FETCH_HEAD \
-      || { post_abort "$pr" "Could not check out PR #$pr head in the clone." "$log"; rm -rf "$clone"; return; }
+    # Fetch the PR head into the PARENT first (its origin is GitHub; a local
+    # clone's origin is the local path, which serves no pull/N/head refs) as a
+    # temp branch, so the local clone inherits it as a normal branch.
+    git fetch -q origin "+pull/$pr/head:pf-verify-$pr" \
+      || { post_abort "$pr" "Could not fetch PR #$pr head from origin." "$log"; return; }
+    git clone --local --no-hardlinks . "$clone" >/dev/null 2>&1 \
+      || { post_abort "$pr" "Local clone failed." "$log"; git branch -qD "pf-verify-$pr" 2>/dev/null; return; }
+    git -C "$clone" checkout -q "pf-verify-$pr" \
+      || { post_abort "$pr" "Could not check out PR #$pr head in the clone." "$log"; rm -rf "$clone"; git branch -qD "pf-verify-$pr" 2>/dev/null; return; }
+    git branch -qD "pf-verify-$pr" 2>/dev/null || true
     local setup_cmd
     setup_cmd=$(pf_cfg '.commands.setup // empty')
     if [ -n "$setup_cmd" ]; then
