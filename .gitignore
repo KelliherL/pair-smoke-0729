@@ -7,3 +7,7 @@
 # OS noise
 .DS_Store
 Thumbs.db
+
+# stack ignores (added by rung 1 — kit finding: foundation rungs must do this)
+node_modules/
+dist/
