@@ -1,6 +1,6 @@
 # ADR 0002 — Engine state shape frozen by the foundation rung
 
-- **Status:** proposed-implemented
+- **Status:** accepted
 - **Risk:** high
 - **Date:** 2026-07-29
 - **Issue:** #11
